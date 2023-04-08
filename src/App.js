@@ -2,41 +2,183 @@ import './App.css';
 import './ProfileIcon.css';
 import { FaUser, FaPencilAlt } from 'react-icons/fa'; 
 import React, { useState } from "react"; 
-
+import axios from 'axios';
 function App() {
   const [isDivOpen, setIsDivOpen] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [email, setEmail] = useState('');
+  const [newPassword, setNewpassword] = useState('');
+  const [confirmPassword, setConfirmpassword] = useState('');
+  const [currentPassword, setCurrentpassword] = useState('');
+   
+  const [savedPassword, setSavedPassword] = useState('');
+  const [isPasswordChange,setIsPassworChange] =useState(false);
+  const [isInterestChange,setIsInterestChange]=useState(false);
+  const [selectedLabels, setSelectedLabels] = useState([]);
+  
+const [prevSelectedLabels, setPrevSelectedLabels] = useState([]);
 
+  const [isSelected1, setIsSelected1] = useState(false);
+  const [isSelected2, setIsSelected2] = useState(false);
+  const [isSelected3, setIsSelected3] = useState(false);
+  const [isSelected4, setIsSelected4] = useState(false);
+  const [isSelected5, setIsSelected5] = useState(false);
+  const [isSelected6, setIsSelected6] = useState(false);
+  const [isSelected7, setIsSelected7] = useState(false);
+  const [isSelected8, setIsSelected8] = useState(false);
+  const handleClick1 = () => {
+    setIsSelected1(!isSelected1);
+    if (!isSelected1) {
+      setSelectedLabels([...selectedLabels, "App Development"]);
+    } else {
+      setSelectedLabels(selectedLabels.filter(label => label !== "App Development"));
+    }
+  };
+  const handleClick2 = () => {
+    setIsSelected2(!isSelected2);
+    if (!isSelected2) {
+      setSelectedLabels([...selectedLabels, "Web Development"]);
+    } else {
+      setSelectedLabels(selectedLabels.filter(label => label !== "Web Development"));
+    }
+  };
+  const handleClick3 = () => {
+    setIsSelected3(!isSelected3);
+    if (!isSelected3) {
+      setSelectedLabels([...selectedLabels, "Game Development"]);
+    } else {
+      setSelectedLabels(selectedLabels.filter(label => label !== "Game Development"));
+    }
+  };
+  const handleClick4 = () => {
+    setIsSelected4(!isSelected4);
+    if (!isSelected4) {
+      setSelectedLabels([...selectedLabels, "Data Structures"]);
+    } else {
+      setSelectedLabels(selectedLabels.filter(label => label !== "Data Structures"));
+    }
+  };
+  const handleClick5 = () => {
+    setIsSelected5(!isSelected5);
+    if (!isSelected5) {
+      setSelectedLabels([...selectedLabels, "Programming"]);
+    } else {
+      setSelectedLabels(selectedLabels.filter(label => label !== "Programming"));
+    }
+  };
+  const handleClick6 = () => {
+    setIsSelected6(!isSelected6);
+    if (!isSelected6) {
+      setSelectedLabels([...selectedLabels, "Machine Learning"]);
+    } else {
+      setSelectedLabels(selectedLabels.filter(label => label !== "Machine Learning"));
+    }
+  };
+  const handleClick7 = () => {
+    setIsSelected7(!isSelected7);
+    if (!isSelected7) {
+      setSelectedLabels([...selectedLabels, "Others"]);
+    } else {
+      setSelectedLabels(selectedLabels.filter(label => label !== "Others"));
+    }
+  };
+  const handleClick8 = () => {
+    setIsSelected8(!isSelected8);
+    if (!isSelected8) {
+      setSelectedLabels([...selectedLabels, "Data Science"]);
+    } else {
+      setSelectedLabels(selectedLabels.filter(label => label !== "Data Science"));
+    }
+  };  
+  const handleSaveClick3 = (event) => { 
+    event.preventDefault();
+  
+    const uniqueLabels = [...new Set([...selectedLabels, ...prevSelectedLabels])];
+    setSelectedLabels(uniqueLabels);
+  
+    const labelsContainer = document.getElementById("interests");
+    if (labelsContainer) {
+      labelsContainer.innerHTML = uniqueLabels.map(label => `<div class="label">${label}</div>`).join('');
+    }
+  
+    handleCloseClick3();
+  }
   function toggleDiv() {
     setIsDivOpen(true); 
   }
+  function toggleDiv2() {
+    setIsPassworChange(true); 
+  }
+  function toggleDiv3() {
+    setIsInterestChange(true); 
+  }
   const handleCloseClick = () => {
     setIsDivOpen(false); 
+  }; 
+  const handleCloseClick2 = () => {
+    setIsPassworChange(false); 
   };
-  const handleFirstNameChange = (event) => {
-    setFirstName(event.target.value);
-  };
-  const handleLastNameChange = (event) => {
-    setLastName(event.target.value);
-  };
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
-  const handleMobileNumberChange = (event) => {
-    setMobileNumber(event.target.value);
-  };
+  const handleCloseClick3 = () => {
+    setIsInterestChange(false); 
+  };  
   const handleSaveClick = () => {
-    // do something with firstName and lastName, such as update a database
-    console.log(`First name: ${firstName}, Last name: ${lastName}`);
-    const updatedFirstName = document.getElementById('firstName').value;
-    const updatedLastName = document.getElementById('lastName').value;
-    setFirstName(updatedFirstName);
-    setLastName(updatedLastName);
+    const userData1 = {
+      firstName: firstName,
+      lastName: lastName,
+      mobileNumber: mobileNumber,
+      email: email
+    };
+    axios.put('/api/user/profile', userData1)
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error.response.data);
+      });
+    
     setIsDivOpen(false);
+  }
+    const handleSaveClick2 = () => {
+      const userData = {
+        newPassword: newPassword,
+        currentPassword: currentPassword,
+        confirmPassword:confirmPassword
+      };
+  axios.put('/api/user/profile', userData)
+      .then(response => {
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error.response.data);
+      });
+      if (newPassword !== confirmPassword) {
+        alert("New password and confirm password do not match.");
+        return;
+      }
+      setSavedPassword(newPassword);
+      setCurrentpassword(newPassword);
+      setNewpassword('');
+      setConfirmpassword('');
+      setIsPassworChange(false);
+  }; 
+
+  const [editing, setEditing] = useState(false);
+  const [description, setDescription] = useState("");
+
+  const handleEditButtonClick = () => {
+    setEditing(true);
   };
+
+  const handleSaveButtonClick = () => {
+    setEditing(false);
+  };
+
+  const handleTextareaChange = (event) => {
+    setDescription(event.target.value);
+  };
+
   return (
     <div style={{ backgroundColor: isDivOpen ? "black" : 'none' }}>
       
@@ -49,29 +191,32 @@ function App() {
               <FaPencilAlt className="profile-icon__edit" />
             </div>
             {isDivOpen && (
+              
               <div className="new-div"   style={{ backgroundColor: !isDivOpen ? 'blur(0px)' : 'none' }}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16" style={{marginLeft:"45rem",marginTop:"-3rem"}} onClick={handleCloseClick}>
                   <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                 </svg>  
+                <form action="POST">
                 <div style={{marginLeft:"20rem"}}>
                 <h3 className='hello' style={{marginTop:".7rem",fontSize:"15px"}}>First Name</h3>
-                <input style={{marginLeft:"0rem",color:"grey",borderColor:"white",borderRadius:".3rem",backgroundColor:"white",width:"25rem" ,height:"2.3rem"}} id="firstName" placeholder='First Name' value={firstName} onChange={handleFirstNameChange} defaultValue={firstName}/>    
+                <input style={{marginLeft:"0rem",color:"grey",borderColor:"white",borderRadius:".3rem",backgroundColor:"white",width:"25rem" ,height:"2.3rem"}} placeholder='First Name'  value={firstName} onChange={(e)=>{setFirstName(e.target.value)}} defaultValue={firstName}/> 
                 <h3 className='hello' style={{marginTop:"0.7rem",fontSize:"15px"}}>Last Name</h3>
-                <input style={{marginLeft:"0rem",color:"grey",borderColor:"white",borderRadius:".3rem",backgroundColor:"white",width:"25rem" ,height:"2.3rem"}} placeholder='Last Name' value={lastName} onChange={handleLastNameChange}/>
+                <input style={{marginLeft:"0rem",color:"grey",borderColor:"white",borderRadius:".3rem",backgroundColor:"white",width:"25rem" ,height:"2.3rem"}} placeholder='Last Name' value={lastName} onChange={(e)=>{setLastName(e.target.value)}} defaultValue={lastName}/>
                 <h3 className='hello' style={{marginTop:".7rem",fontSize:"15px"}}>Email Address</h3>
-                <input style={{marginLeft:"0rem",color:"grey",borderColor:"white",borderRadius:".3rem",backgroundColor:"white",width:"25rem" ,height:"2.3rem"}} placeholder='Email Address' value={email} onChange={handleEmailChange}/>
+                <input style={{marginLeft:"0rem",color:"grey",borderColor:"white",borderRadius:".3rem",backgroundColor:"white",width:"25rem" ,height:"2.3rem"}} placeholder='Email Address' value={email} onChange={(e)=>{setEmail(e.target.value)}} defaultValue={email}/>
                 <h3 className='hello' style={{marginTop:"0.7rem",fontSize:"15px"}}>Mobile Number</h3>    
-                <input style={{marginLeft:"0rem",color:"grey",borderColor:"white",borderRadius:".3rem",backgroundColor:"white",width:"25rem" ,height:"2.3rem"}} placeholder='Mobile Number' value={mobileNumber} onChange={handleMobileNumberChange}/>  
+                <input style={{marginLeft:"0rem",color:"grey",borderColor:"white",borderRadius:".3rem",backgroundColor:"white",width:"25rem" ,height:"2.3rem"}} placeholder='Mobile Number' value={mobileNumber} onChange={(e)=>{setMobileNumber(e.target.value)}} defaultValue={mobileNumber}/>  
                 <button className='edit_btn' style={{marginLeft:"5rem",backgroundColor:"black"}} onClick={handleCloseClick}>Cancel</button>
                 <button className='edit_btn' style={{marginLeft:"10rem"}} onClick={handleSaveClick}>Save</button>  
                 </div>
+                </form>
               </div>
             )}
           </div> 
           <div id='name' className='name_desc'> 
               <h4 className='hello'>Hello,</h4>
-              <h3 className='u'>Unnimaya T</h3>
-              <h4 className='hello' style={{marginTop:"-0.7rem",fontSize:"13px"}}>unnimayat01@gmail.com</h4>
+              <h3 className='u'>{firstName}</h3>
+              <h4 className='hello' style={{marginTop:"-0.7rem",fontSize:"13px"}}> {email}</h4>
           </div>
           <div id='followers' className='btn'>
             <button className='btn'>0 Followers</button>
@@ -79,10 +224,18 @@ function App() {
       </div>
 
       <div id='about' className='about'>
-        <button className='edit_btn' style={{marginLeft:"74rem",width:"4.5rem"}}>Edit</button>
-        <h3 className='u' style={{marginLeft:"-4rem",fontSize:"13px",width:"7rem"}}>ABOUT ME</h3>   
-        <textarea className='description'  ></textarea>
-      </div>     
+      {editing ? (
+        <button className='edit_btn' style={{marginLeft:"74rem",width:"4.5rem"}} onClick={handleSaveButtonClick}>Save</button>
+      ) : (
+        <button className='edit_btn' style={{marginLeft:"74rem",width:"4.5rem"}} onClick={handleEditButtonClick}>Edit</button>
+      )}
+      <h3 className='u' style={{marginLeft:"-4rem",fontSize:"13px",width:"7rem"}}>ABOUT ME</h3>   
+      {editing ? (
+        <textarea className='description' id="myTextarea" value={description} onChange={handleTextareaChange} />
+      ) : (
+        <div className='description'>{description}</div>
+      )}
+    </div>
       <div style={{backgroundColor:"grey",height:".5px"}}></div>
 
       <div id='map' className='map'>
@@ -229,7 +382,27 @@ function App() {
       <div style={{backgroundColor:"grey",height:"1px"}}></div>
       <div id='password' className='password'>
         <div className='web_x'>
-          <button className='edit_btn'>Change</button>
+          <button className='edit_btn' onClick={toggleDiv2}>Change</button>
+          {isPasswordChange && (
+              
+              <div className="new-div"   style={{  marginTop:"-10rem" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16" style={{marginLeft:"45rem",marginTop:"-3rem"}} onClick={handleCloseClick2}>
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                </svg>  
+                <form action="POST">
+                <div style={{marginLeft:"20rem"}}>
+                <h3 className='hello' style={{marginTop:".7rem",fontSize:"15px"}}>Current Password</h3>
+                <input style={{marginLeft:"0rem",color:"grey",borderColor:"white",borderRadius:".3rem",backgroundColor:"white",width:"25rem" ,height:"2.3rem"}} placeholder='current password'  value={currentPassword} onChange={(e)=>{setCurrentpassword(e.target.value)}}  /> 
+                <h3 className='hello' style={{marginTop:"0.7rem",fontSize:"15px"}}>New Password</h3>
+                <input style={{marginLeft:"0rem",color:"grey",borderColor:"white",borderRadius:".3rem",backgroundColor:"white",width:"25rem" ,height:"2.3rem"}} placeholder='new password' value={newPassword} onChange={(e)=>{setNewpassword(e.target.value)}} />
+                <h3 className='hello' style={{marginTop:".7rem",fontSize:"15px"}}>Confirm Password</h3>
+                <input style={{marginLeft:"0rem",color:"grey",borderColor:"white",borderRadius:".3rem",backgroundColor:"white",width:"25rem" ,height:"2.3rem"}} placeholder='confirm password' value={confirmPassword} onChange={(e)=>{setConfirmpassword(e.target.value)}} />
+                <button className='edit_btn' style={{marginLeft:"5rem",backgroundColor:"black"}} onClick={handleCloseClick2}>Cancel</button>
+                <button className='edit_btn' style={{marginLeft:"10rem"}} onClick={handleSaveClick2}>Save</button>  
+                </div>
+                </form>
+              </div>
+            )}
           <h3 className='u' style={{ fontSize:"13px",width:"15rem" }}>PASSWORD & SECURITY</h3>    
         </div>
         <br></br>
@@ -237,7 +410,7 @@ function App() {
             <h3  className='hello' style={{marginTop:"-0.7rem",fontSize:"15px"}}>Password</h3>
             <div style={{borderColor:"black",borderRadius:".3rem",backgroundColor:"white" ,width:"25rem" ,height:"2.3rem"}}>
             <label style={{marginLeft:"1rem",marginTop:"2rem",color:"grey"}} placeholder='Linkedin'>
-             
+             {currentPassword}
             </label> 
              
             </div>
@@ -246,11 +419,37 @@ function App() {
       <div style={{backgroundColor:"grey",height:"1px"}}></div>
       <div id='interest' className='interest'>
         <div className='web_x'>
-          <button className='edit_btn'>Edit</button>
+          <button className='edit_btn' onClick={toggleDiv3}>Edit</button>
           <h3 className='u' style={{fontSize:"13px",width:"15rem"}}>INTERESTS</h3>    
         </div>
+        <ul>
+    {selectedLabels.map((label, index) => (
+      <li key={index}>{label}</li>
+    ))}
+  </ul>
       </div>
-    
+      {isInterestChange && (
+              
+              <div className="new-div"   style={{width:"35rem",height:"20rem",marginTop:"-15rem"}}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16" style={{marginLeft:"30rem",marginTop:"-3rem"}} onClick={handleCloseClick3}>
+                  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                </svg>  
+                <form action="POST">
+                <div className='grid2' >
+                <label onClick={handleClick1} style={{marginLeft:"0rem",color:"black",borderColor:"white",borderRadius:".3rem",width:"15rem" ,height:"2.3rem",backgroundColor: isSelected1 ? " rgba(230, 131, 38, 0.895)" : "white" }}   value={newPassword} onChange={(e)=>{setCurrentpassword(e.target.value)}} readOnly >App Development</label> 
+                <label onClick={handleClick2} style={{marginLeft:"0rem",color:" black",borderColor:"white",borderRadius:".3rem",width:"15rem" ,height:"2.3rem",backgroundColor: isSelected2 ? " rgba(230, 131, 38, 0.895)" : "white"}}   value={newPassword} onChange={(e)=>{setNewpassword(e.target.value)}} readOnly>Web Development</label>
+                <label onClick={handleClick3} style={{marginLeft:"0rem",color:" black",borderColor:"white",borderRadius:".3rem" ,width:"15rem" ,height:"2.3rem",backgroundColor: isSelected3 ? "  rgba(230, 131, 38, 0.895)" : "white"}}   value={newPassword} onChange={(e)=>{setConfirmpassword(e.target.value)}} readOnly>Game Development</label>
+                <label onClick={handleClick4} style={{marginLeft:"0rem",color: "black",borderColor:"white",borderRadius:".3rem" ,width:"15rem" ,height:"2.3rem",backgroundColor: isSelected4 ? "  rgba(230, 131, 38, 0.895)" : "white"}}   value={newPassword} onChange={(e)=>{setCurrentpassword(e.target.value)}} readOnly >Data Structures</label> 
+                <label onClick={handleClick5} style={{marginLeft:"0rem",color:"black",borderColor:"white",borderRadius:".3rem" ,width:"15rem" ,height:"2.3rem",backgroundColor: isSelected5 ? "  rgba(230, 131, 38, 0.895)" : "white"}}   value={newPassword} onChange={(e)=>{setNewpassword(e.target.value)}} readOnly>Programming</label>
+                <label onClick={handleClick6} style={{marginLeft:"0rem",color:"black",borderColor:"white",borderRadius:".3rem" ,width:"15rem" ,height:"2.3rem",backgroundColor: isSelected6 ? "  rgba(230, 131, 38, 0.895)" : "white"}}   value={confirmPassword} onChange={(e)=>{setConfirmpassword(e.target.value)}} readOnly>Machine Learning</label>
+                <label onClick={handleClick7} style={{marginLeft:"0rem",color:"black",borderColor:"white",borderRadius:".3rem" ,width:"15rem" ,height:"2.3rem",backgroundColor: isSelected7 ? "  rgba(230, 131, 38, 0.895)" : "white"}}   value={currentPassword} onChange={(e)=>{setCurrentpassword(e.target.value)}} readOnly >Others</label> 
+                <label onClick={handleClick8} style={{marginLeft:"0rem",color:"black",borderColor:"white",borderRadius:".3rem" ,width:"15rem" ,height:"2.3rem",backgroundColor: isSelected8 ? "  rgba(230, 131, 38, 0.895)" : "white"}}   value={newPassword} onChange={(e)=>{setNewpassword(e.target.value)}} >Data Science</label>
+                <button className='edit_btn' style={{marginLeft:"5rem",backgroundColor:"black"}} onClick={handleCloseClick3}>Cancel</button>
+                <button className='edit_btn' style={{marginLeft:"10rem"}} onClick={handleSaveClick3}>Save</button>  
+                </div>
+                </form>
+              </div>
+            )}
     </div>
   );
 }
